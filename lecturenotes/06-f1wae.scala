@@ -172,7 +172,7 @@ def evalDynScope(funs: Funs, env: Env, e: Exp) : Int = e match {
   case Call(f,args) => {
      val fd = funs(f)
      val vargs = args.map(evalDynScope(funs,env,_))
-     if (fd.args.size != vargs.size) sys.error("number of paramters in call to "+f+" does not match")
+     if (fd.args.size != vargs.size) sys.error("number of paramters in call to "+ f + " does not match")
      val newenv = env ++ fd.args.zip(vargs) // extending env instead of Map() !!
      evalDynScope(funs,newenv,fd.body)
   }
@@ -206,5 +206,7 @@ sequence of functions that did not bind a value for n, then that particular appl
 previous application of f in the very same program’s execution completed successfully! In other words, simply by looking at the
 source text of f, it would be impossible to determine one of the most rudimentary properties of a program: whether or not a given
 identiﬁer was bound. You can only imagine the mayhem this would cause in a large software system, especially with multiple developers
-and complex ﬂows of control. We will therefore regard dynamic scope as an error
+and complex ﬂows of control. We will therefore regard dynamic scope as an error. That said, there are facets of dynamic binding
+that are quite useful. For instance, exception handlers are typically dynamically scoped: A thrown exception is dispatched to the
+most recently encountered active exception handler for that exception type. 
 */
