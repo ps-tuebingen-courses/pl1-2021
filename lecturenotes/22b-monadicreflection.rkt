@@ -19,9 +19,11 @@
 
 ; Monadic reflection (Filinski)
 
+; List[A] -> A (quasi-type)
 (define (reflect m)
   (shift k (bind m k)))
 
+; A -> List[A] (quasi-type)
 ; this is a macro that transforms (reify e) into (reify-thunk (thunk e))
 ; its sole purpose is to prevent the evaluation of e and wrap it into a thunk
 (define-syntaxes (reify)
@@ -37,3 +39,32 @@
 
 ; more information in "Representing Monads" by A. Filinski:
 ;https://doi.org/10.1145/174675.178047
+
+
+
+; Example: Backtracking using monadic reflection
+; The n-queens problem
+
+(define (fail) (reflect (list)))
+
+; Nat List[Nat] Nat -> Bool
+(define (safe x l n)
+  (or (empty? l)
+      (let ((c (first l)))
+        (and (not (= x c))
+             (not (= x (+ c n)))
+             (not (= x (- c n)))
+             (safe x (rest l) (+ n 1))))))
+
+(define (queens n)
+  (foldl (lambda (_ y)
+           (let ((next (reflect (inclusive-range 1 n))))
+             (if (safe next y 1)
+                 (cons next y)
+                 (fail))))
+         empty
+         (inclusive-range 1 n)))
+
+(reify (queens 8))
+
+
