@@ -44,8 +44,10 @@
 
 ; Example: Backtracking using monadic reflection
 ; The n-queens problem
+; If partial results are desired, lists should be
+; replaced by streams
 
-(define (fail) (reflect (list)))
+(define (fail) (reflect empty))
 
 ; Nat List[Nat] Nat -> Bool
 (define (safe x l n)
